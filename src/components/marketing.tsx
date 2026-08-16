@@ -19,7 +19,7 @@ export function MarketingNav() {
             <Link to="/auth">Sign in</Link>
           </Button>
           <Button asChild size="sm">
-            <Link to="/auth" search={{ mode: "signup" }}>Get started</Link>
+            <Link to="/auth">Get started</Link>
           </Button>
         </div>
       </div>
@@ -79,7 +79,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
         {links.map(([label, to]) => (
           <li key={to}>
-            <Link to={to} className="transition-colors hover:text-foreground">
+            <Link to={to as "/"} className="transition-colors hover:text-foreground">
               {label}
             </Link>
           </li>
