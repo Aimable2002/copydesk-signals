@@ -131,7 +131,7 @@ function makeTrades(rnd: () => number, n: number, winRate: number, seedId: strin
   const out: Trade[] = [];
   const now = Date.UTC(2026, 7, 16, 15, 30);
   for (let i = 0; i < n; i++) {
-    const symbol = SYMBOLS[Math.floor(rnd() * SYMBOLS.length)];
+    const symbol = SYMBOLS[Math.floor(rnd() * SYMBOLS.length)]!;
     const win = rnd() * 100 < winRate;
     const openTs = now - (i * 3600000 * (2 + rnd() * 9) + rnd() * 3600000);
     const dur = (10 + rnd() * 600) * 60000;
@@ -158,7 +158,7 @@ function makeTrades(rnd: () => number, n: number, winRate: number, seedId: strin
 
 export const MASTERS: Master[] = NAMES.map(([name, country, strategy], i) => {
   const rnd = mulberry(hash(name) + 7);
-  const id = name.toLowerCase().split(" ")[0] + "-" + (i + 1);
+  const id = name.toLowerCase().split(" ")[0]! + "-" + (i + 1);
   const platform: Platform = i % 4 === 3 ? "cTrader" : "MT5";
   const brokerPool = BROKERS.filter((b) => b.platform === platform);
   const winRate = Math.round((48 + rnd() * 28) * 10) / 10;
@@ -177,7 +177,7 @@ export const MASTERS: Master[] = NAMES.map(([name, country, strategy], i) => {
     avatarSeed: name,
     country,
     platform,
-    broker: brokerPool[Math.floor(rnd() * brokerPool.length)].name,
+    broker: brokerPool[Math.floor(rnd() * brokerPool.length)]!.name,
     strategy,
     bio: `${strategy}. Trading live capital since ${2026 - Math.ceil(months / 12)}. Fixed risk per position, no martingale, no grid. Every fill is published to CopyDesk within milliseconds of execution.`,
     featured: i < 3,
@@ -198,8 +198,8 @@ export const MASTERS: Master[] = NAMES.map(([name, country, strategy], i) => {
     avgLoss,
     closedTrades,
     riskScore: Math.min(10, Math.max(1, Math.round(maxDrawdown / 2.4))),
-    feePct: [15, 20, 25, 30][Math.floor(rnd() * 4)],
-    monthlyFee: [0, 19, 29, 49][Math.floor(rnd() * 4)],
+    feePct: [15, 20, 25, 30][Math.floor(rnd() * 4)]!,
+    monthlyFee: [0, 19, 29, 49][Math.floor(rnd() * 4)]!,
     equityCurve: makeEquityCurve(rnd, months, return30d),
     bySymbol: SYMBOLS.slice(0, 6).map((symbol) => ({
       symbol,
@@ -262,7 +262,7 @@ export const ACCOUNTS: Account[] = [
     equity: 5013.9,
     openPnl: 193.35,
     status: "live",
-    copying: MASTERS[0].id,
+    copying: MASTERS[0]!.id,
     sizingMode: "risk-percent",
     sizingValue: 0.75,
     createdAt: "2026-03-04",
@@ -280,7 +280,7 @@ export const ACCOUNTS: Account[] = [
     equity: 208.66,
     openPnl: -5.54,
     status: "live",
-    copying: MASTERS[4].id,
+    copying: MASTERS[4]!.id,
     sizingMode: "micro-scale",
     sizingValue: 0.01,
     createdAt: "2026-06-21",
@@ -313,7 +313,7 @@ export const ACCOUNTS: Account[] = [
     equity: 0,
     openPnl: 0,
     status: "closed",
-    copying: MASTERS[2].id,
+    copying: MASTERS[2]!.id,
     sizingMode: "proportional",
     sizingValue: 1,
     createdAt: "2025-08-02",
@@ -325,10 +325,10 @@ export function getAccount(id: string) {
 }
 
 export const OPEN_POSITIONS = [
-  { id: "P-9001", symbol: "XAUUSD", side: "BUY" as const, lots: 0.42, entry: 3318.44, current: 3327.9, pnl: 397.32, master: MASTERS[0].name, opened: "12m ago" },
-  { id: "P-9002", symbol: "EURUSD", side: "SELL" as const, lots: 1.1, entry: 1.0872, current: 1.0864, pnl: 88.0, master: MASTERS[0].name, opened: "48m ago" },
-  { id: "P-9003", symbol: "NAS100", side: "BUY" as const, lots: 0.3, entry: 20118.5, current: 20090.2, pnl: -84.9, master: MASTERS[4].name, opened: "1h 22m ago" },
-  { id: "P-9004", symbol: "GBPJPY", side: "BUY" as const, lots: 0.25, entry: 197.42, current: 197.81, pnl: 64.1, master: MASTERS[4].name, opened: "3h 05m ago" },
+  { id: "P-9001", symbol: "XAUUSD", side: "BUY" as const, lots: 0.42, entry: 3318.44, current: 3327.9, pnl: 397.32, master: MASTERS[0]!.name, opened: "12m ago" },
+  { id: "P-9002", symbol: "EURUSD", side: "SELL" as const, lots: 1.1, entry: 1.0872, current: 1.0864, pnl: 88.0, master: MASTERS[0]!.name, opened: "48m ago" },
+  { id: "P-9003", symbol: "NAS100", side: "BUY" as const, lots: 0.3, entry: 20118.5, current: 20090.2, pnl: -84.9, master: MASTERS[4]!.name, opened: "1h 22m ago" },
+  { id: "P-9004", symbol: "GBPJPY", side: "BUY" as const, lots: 0.25, entry: 197.42, current: 197.81, pnl: 64.1, master: MASTERS[4]!.name, opened: "3h 05m ago" },
 ];
 
 export const EQUITY_SUMMARY = Array.from({ length: 30 }, (_, i) => {
@@ -348,7 +348,7 @@ export const PAYOUTS = [
 ];
 
 export const EARNINGS = Array.from({ length: 8 }, (_, i) => ({
-  month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"][i],
+  month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"][i]!,
   fees: Math.round(900 + mulberry(30 + i)() * 5200),
 }));
 
