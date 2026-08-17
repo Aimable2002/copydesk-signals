@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MastersIndexRouteImport } from './routes/masters.index'
+import { Route as MastersMasterIdRouteImport } from './routes/masters.$masterId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,12 +41,18 @@ const MastersIndexRoute = MastersIndexRouteImport.update({
   path: '/masters/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MastersMasterIdRoute = MastersMasterIdRouteImport.update({
+  id: '/masters/$masterId',
+  path: '/masters/$masterId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters': typeof MastersIndexRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,34 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/onboarding' | '/masters/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/masters/$masterId'
+    | '/masters/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/onboarding' | '/masters'
-  id: '__root__' | '/' | '/auth' | '/dashboard' | '/onboarding' | '/masters/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/masters/$masterId'
+    | '/masters'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/masters/$masterId'
+    | '/masters/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +104,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   OnboardingRoute: typeof OnboardingRoute
+  MastersMasterIdRoute: typeof MastersMasterIdRoute
   MastersIndexRoute: typeof MastersIndexRoute
 }
 
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MastersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/masters/$masterId': {
+      id: '/masters/$masterId'
+      path: '/masters/$masterId'
+      fullPath: '/masters/$masterId'
+      preLoaderRoute: typeof MastersMasterIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   OnboardingRoute: OnboardingRoute,
+  MastersMasterIdRoute: MastersMasterIdRoute,
   MastersIndexRoute: MastersIndexRoute,
 }
 export const routeTree = rootRouteImport
