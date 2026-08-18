@@ -23,7 +23,7 @@ export const Route = createFileRoute("/payment-status")({
       },
     ],
   }),
-  component: PaymentStatus;
+  component: PaymentStatus,
 });
 
 type Tx = (typeof TRANSACTIONS)[number];
