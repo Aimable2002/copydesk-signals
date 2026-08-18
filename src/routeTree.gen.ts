@@ -16,6 +16,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as TradesRouteImport } from './routes/trades'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as AccountsAccountIdRouteImport } from './routes/accounts.$accountId'
 import { Route as MastersIndexRouteImport } from './routes/masters.index'
 import { Route as MastersMasterIdRouteImport } from './routes/masters.$masterId'
@@ -55,6 +56,11 @@ const TradesRoute = TradesRouteImport.update({
   path: '/trades',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountsAccountIdRoute = AccountsAccountIdRouteImport.update({
   id: '/accounts/$accountId',
   path: '/accounts/$accountId',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters': typeof MastersIndexRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/wallet'
     | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/wallet'
     | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/wallet'
     | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   OnboardingRoute: typeof OnboardingRoute
   TradesRoute: typeof TradesRoute
+  WalletRoute: typeof WalletRoute
   AccountsAccountIdRoute: typeof AccountsAccountIdRoute
   MastersMasterIdRoute: typeof MastersMasterIdRoute
   MastersIndexRoute: typeof MastersIndexRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TradesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accounts/$accountId': {
       id: '/accounts/$accountId'
       path: '/accounts/$accountId'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   OnboardingRoute: OnboardingRoute,
   TradesRoute: TradesRoute,
+  WalletRoute: WalletRoute,
   AccountsAccountIdRoute: AccountsAccountIdRoute,
   MastersMasterIdRoute: MastersMasterIdRoute,
   MastersIndexRoute: MastersIndexRoute,
