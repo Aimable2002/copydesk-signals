@@ -33,7 +33,7 @@ export const Route = createFileRoute("/checkout")({
       },
     ],
   }),
-  component: Checkout;
+  component: Checkout,
 });
 
 const CURRENCIES = [
