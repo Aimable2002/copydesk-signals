@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as TradesRouteImport } from './routes/trades'
+import { Route as AccountsAccountIdRouteImport } from './routes/accounts.$accountId'
 import { Route as MastersIndexRouteImport } from './routes/masters.index'
 import { Route as MastersMasterIdRouteImport } from './routes/masters.$masterId'
 
@@ -48,6 +49,11 @@ const TradesRoute = TradesRouteImport.update({
   path: '/trades',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountsAccountIdRoute = AccountsAccountIdRouteImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MastersIndexRoute = MastersIndexRouteImport.update({
   id: '/masters/',
   path: '/masters/',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters': typeof MastersIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/trades': typeof TradesRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/onboarding'
     | '/trades'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   OnboardingRoute: typeof OnboardingRoute
   TradesRoute: typeof TradesRoute
+  AccountsAccountIdRoute: typeof AccountsAccountIdRoute
   MastersMasterIdRoute: typeof MastersMasterIdRoute
   MastersIndexRoute: typeof MastersIndexRoute
 }
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TradesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accounts/$accountId': {
+      id: '/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AccountsAccountIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/masters/': {
       id: '/masters/'
       path: '/masters'
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   OnboardingRoute: OnboardingRoute,
   TradesRoute: TradesRoute,
+  AccountsAccountIdRoute: AccountsAccountIdRoute,
   MastersMasterIdRoute: MastersMasterIdRoute,
   MastersIndexRoute: MastersIndexRoute,
 }
