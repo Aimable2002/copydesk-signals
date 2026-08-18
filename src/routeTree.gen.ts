@@ -11,9 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChallengesRouteImport } from './routes/challenges'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PaymentStatusRouteImport } from './routes/payment-status'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as TradesRouteImport } from './routes/trades'
+import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as AccountsAccountIdRouteImport } from './routes/accounts.$accountId'
 import { Route as MastersIndexRouteImport } from './routes/masters.index'
 import { Route as MastersMasterIdRouteImport } from './routes/masters.$masterId'
 
@@ -25,6 +32,16 @@ const IndexRoute = IndexRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChallengesRoute = ChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -42,6 +59,31 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentStatusRoute = PaymentStatusRouteImport.update({
+  id: '/payment-status',
+  path: '/payment-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradesRoute = TradesRouteImport.update({
+  id: '/trades',
+  path: '/trades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountsAccountIdRoute = AccountsAccountIdRouteImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MastersIndexRoute = MastersIndexRouteImport.update({
   id: '/masters/',
   path: '/masters/',
@@ -56,18 +98,32 @@ const MastersMasterIdRoute = MastersMasterIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
+  '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
+  '/pricing': typeof PricingRoute
+  '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
+  '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
+  '/pricing': typeof PricingRoute
+  '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters': typeof MastersIndexRoute
 }
@@ -75,9 +131,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
+  '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
+  '/pricing': typeof PricingRoute
+  '/trades': typeof TradesRoute
+  '/wallet': typeof WalletRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/masters/$masterId': typeof MastersMasterIdRoute
   '/masters/': typeof MastersIndexRoute
 }
@@ -86,27 +149,48 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/challenges'
+    | '/checkout'
     | '/dashboard'
     | '/leaderboard'
     | '/onboarding'
+    | '/payment-status'
+    | '/pricing'
+    | '/trades'
+    | '/wallet'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/challenges'
+    | '/checkout'
     | '/dashboard'
     | '/leaderboard'
     | '/onboarding'
+    | '/payment-status'
+    | '/pricing'
+    | '/trades'
+    | '/wallet'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters'
   id:
     | '__root__'
     | '/'
     | '/auth'
+    | '/challenges'
+    | '/checkout'
     | '/dashboard'
     | '/leaderboard'
     | '/onboarding'
+    | '/payment-status'
+    | '/pricing'
+    | '/trades'
+    | '/wallet'
+    | '/accounts/$accountId'
     | '/masters/$masterId'
     | '/masters/'
   fileRoutesById: FileRoutesById
@@ -114,9 +198,16 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  ChallengesRoute: typeof ChallengesRoute
+  CheckoutRoute: typeof CheckoutRoute
   DashboardRoute: typeof DashboardRoute
   LeaderboardRoute: typeof LeaderboardRoute
   OnboardingRoute: typeof OnboardingRoute
+  PaymentStatusRoute: typeof PaymentStatusRoute
+  PricingRoute: typeof PricingRoute
+  TradesRoute: typeof TradesRoute
+  WalletRoute: typeof WalletRoute
+  AccountsAccountIdRoute: typeof AccountsAccountIdRoute
   MastersMasterIdRoute: typeof MastersMasterIdRoute
   MastersIndexRoute: typeof MastersIndexRoute
 }
@@ -135,6 +226,20 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/challenges': {
+      id: '/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof ChallengesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -158,6 +263,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/payment-status': {
+      id: '/payment-status'
+      path: '/payment-status'
+      fullPath: '/payment-status'
+      preLoaderRoute: typeof PaymentStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trades': {
+      id: '/trades'
+      path: '/trades'
+      fullPath: '/trades'
+      preLoaderRoute: typeof TradesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accounts/$accountId': {
+      id: '/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AccountsAccountIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/masters/': {
       id: '/masters/'
       path: '/masters'
@@ -178,9 +318,16 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  ChallengesRoute: ChallengesRoute,
+  CheckoutRoute: CheckoutRoute,
   DashboardRoute: DashboardRoute,
   LeaderboardRoute: LeaderboardRoute,
   OnboardingRoute: OnboardingRoute,
+  PaymentStatusRoute: PaymentStatusRoute,
+  PricingRoute: PricingRoute,
+  TradesRoute: TradesRoute,
+  WalletRoute: WalletRoute,
+  AccountsAccountIdRoute: AccountsAccountIdRoute,
   MastersMasterIdRoute: MastersMasterIdRoute,
   MastersIndexRoute: MastersIndexRoute,
 }
