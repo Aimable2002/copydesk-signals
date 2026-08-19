@@ -26,7 +26,6 @@ import {
   MASTERS,
   fmtDate,
   fmtMoney,
-  fmtPct,
 } from "@/lib/mock";
 
 export const Route = createFileRoute("/admin")({
@@ -57,7 +56,7 @@ function Admin() {
       id: m.id,
       name: m.name,
       platform: m.platform,
-      pnl: m.pnl30d,
+      pnl: m.return30d,
       followers: m.followers,
       approved: i !== 6,
       featured: i < 2,
@@ -268,7 +267,7 @@ function Admin() {
                   </div>
                 </div>
                 <div className="num text-sm">
-                  <PnL value={m.pnl} format={(v) => fmtPct(v)} />
+                  <PnL value={m.pnl} suffix="%" />
                 </div>
                 <div className="ml-auto flex flex-wrap items-center gap-2">
                   {!m.approved && <Badge variant="outline">Awaiting review</Badge>}

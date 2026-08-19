@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -18,6 +19,7 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PaymentStatusRouteImport } from './routes/payment-status'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TradesRouteImport } from './routes/trades'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as AccountsAccountIdRouteImport } from './routes/accounts.$accountId'
@@ -27,6 +29,11 @@ import { Route as MastersMasterIdRouteImport } from './routes/masters.$masterId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -69,6 +76,11 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TradesRoute = TradesRouteImport.update({
   id: '/trades',
   path: '/trades',
@@ -97,6 +109,7 @@ const MastersMasterIdRoute = MastersMasterIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/challenges': typeof ChallengesRoute
   '/checkout': typeof CheckoutRoute
@@ -105,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -113,6 +127,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/challenges': typeof ChallengesRoute
   '/checkout': typeof CheckoutRoute
@@ -121,6 +136,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -130,6 +146,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/challenges': typeof ChallengesRoute
   '/checkout': typeof CheckoutRoute
@@ -138,6 +155,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -148,6 +166,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/challenges'
     | '/checkout'
@@ -156,6 +175,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -164,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/auth'
     | '/challenges'
     | '/checkout'
@@ -172,6 +193,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -180,6 +202,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/challenges'
     | '/checkout'
@@ -188,6 +211,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -197,6 +221,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   ChallengesRoute: typeof ChallengesRoute
   CheckoutRoute: typeof CheckoutRoute
@@ -205,6 +230,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PaymentStatusRoute: typeof PaymentStatusRoute
   PricingRoute: typeof PricingRoute
+  SettingsRoute: typeof SettingsRoute
   TradesRoute: typeof TradesRoute
   WalletRoute: typeof WalletRoute
   AccountsAccountIdRoute: typeof AccountsAccountIdRoute
@@ -219,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -277,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trades': {
       id: '/trades'
       path: '/trades'
@@ -317,6 +357,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   ChallengesRoute: ChallengesRoute,
   CheckoutRoute: CheckoutRoute,
@@ -325,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PaymentStatusRoute: PaymentStatusRoute,
   PricingRoute: PricingRoute,
+  SettingsRoute: SettingsRoute,
   TradesRoute: TradesRoute,
   WalletRoute: WalletRoute,
   AccountsAccountIdRoute: AccountsAccountIdRoute,
