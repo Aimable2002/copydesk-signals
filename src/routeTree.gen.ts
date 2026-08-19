@@ -19,6 +19,7 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PaymentStatusRouteImport } from './routes/payment-status'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TradesRouteImport } from './routes/trades'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as AccountsAccountIdRouteImport } from './routes/accounts.$accountId'
@@ -75,6 +76,11 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TradesRoute = TradesRouteImport.update({
   id: '/trades',
   path: '/trades',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/trades': typeof TradesRoute
   '/wallet': typeof WalletRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/payment-status'
     | '/pricing'
+    | '/settings'
     | '/trades'
     | '/wallet'
     | '/accounts/$accountId'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PaymentStatusRoute: typeof PaymentStatusRoute
   PricingRoute: typeof PricingRoute
+  SettingsRoute: typeof SettingsRoute
   TradesRoute: typeof TradesRoute
   WalletRoute: typeof WalletRoute
   AccountsAccountIdRoute: typeof AccountsAccountIdRoute
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trades': {
       id: '/trades'
       path: '/trades'
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PaymentStatusRoute: PaymentStatusRoute,
   PricingRoute: PricingRoute,
+  SettingsRoute: SettingsRoute,
   TradesRoute: TradesRoute,
   WalletRoute: WalletRoute,
   AccountsAccountIdRoute: AccountsAccountIdRoute,

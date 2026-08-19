@@ -148,7 +148,7 @@ function Toggle({
         <div className="text-sm font-medium">{title}</div>
         <div className="mt-0.5 text-sm text-muted-foreground">{desc}</div>
       </div>
-      <Switch defaultChecked={defaultChecked} />
+      <Switch defaultChecked={defaultChecked ?? false} />
     </div>
   );
 }
