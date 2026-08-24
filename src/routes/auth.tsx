@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PLATFORM_STATS } from "@/lib/mock";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -32,14 +32,48 @@ function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const submit = (kind: "in" | "up") => (e: React.FormEvent) => {
+  const routeAfterAuth = async () => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return navigate({ to: "/auth" });
+    const { data } = await supabase
+      .from("accounts")
+      .select("account_id")
+      .eq("user_id", auth.user.id)
+      .limit(1);
+    navigate({ to: data && data.length ? "/dashboard" : "/onboarding" });
+  };
+
+  const submit = (kind: "in" | "up") => async (e: React.FormEvent) => {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
+    const email = String(fd.get("email") ?? "").trim();
+    const password = String(fd.get("password") ?? "");
+    if (!email || !password) {
+      toast.error("Email and password are required");
+      return;
+    }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      if (kind === "in") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Welcome back");
+      } else {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        if (!data.session) {
+          toast.success("Check your inbox to confirm your email, then sign in.");
+          return;
+        }
+        toast.success("Desk created");
+      }
+      await routeAfterAuth();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Authentication failed");
+    } finally {
       setLoading(false);
-      toast.success(kind === "in" ? "Welcome back" : "Desk created");
-      navigate({ to: kind === "in" ? "/dashboard" : "/onboarding" });
-    }, 600);
+    }
   };
 
   return (
@@ -53,8 +87,7 @@ function AuthPage() {
             Your broker. Your capital. <span className="brand-gradient-text">Their edge.</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
-            {PLATFORM_STATS.liveAccounts.toLocaleString()} live accounts mirroring verified fills
-            at a median of {PLATFORM_STATS.latencyMs}ms.
+            Live accounts mirroring verified fills from masters trading their own capital.
           </p>
           <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" />
@@ -62,7 +95,7 @@ function AuthPage() {
           </div>
         </div>
         <p className="relative text-xs text-muted-foreground">
-          Demo environment. All data shown is illustrative sample data.
+          Your capital stays at your own broker. CopyDesk never holds funds.
         </p>
       </div>
 
@@ -83,10 +116,22 @@ function AuthPage() {
                 Pick up where your relay left off.
               </p>
               <form className="mt-7 space-y-4" onSubmit={submit("in")}>
-                <Field id="si-email" label="Email" icon={Mail} type="email" placeholder="you@desk.com" defaultValue="jonah@copydesk.io" />
-                <Field id="si-pass" label="Password" icon={Lock} type="password" placeholder="••••••••" defaultValue="password" />
+                <Field id="si-email" name="email" label="Email" icon={Mail} type="email" placeholder="you@desk.com" autoComplete="email" />
+                <Field id="si-pass" name="password" label="Password" icon={Lock} type="password" placeholder="••••••••" autoComplete="current-password" />
                 <div className="flex justify-end">
-                  <button type="button" className="text-xs text-muted-foreground hover:text-foreground">
+                  <button
+                    type="button"
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                    onClick={async () => {
+                      const email = window.prompt("Email to send a reset link to?")?.trim();
+                      if (!email) return;
+                      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                        redirectTo: `${window.location.origin}/settings`,
+                      });
+                      if (error) toast.error(error.message);
+                      else toast.success("Reset link sent");
+                    }}
+                  >
                     Forgot password?
                   </button>
                 </div>
@@ -102,9 +147,9 @@ function AuthPage() {
                 Free tier, one master, no card required.
               </p>
               <form className="mt-7 space-y-4" onSubmit={submit("up")}>
-                <Field id="su-name" label="Full name" icon={User} placeholder="Jonah Mwangi" />
-                <Field id="su-email" label="Email" icon={Mail} type="email" placeholder="you@desk.com" />
-                <Field id="su-pass" label="Password" icon={Lock} type="password" placeholder="At least 8 characters" />
+                <Field id="su-name" name="full_name" label="Full name" icon={User} placeholder="Jonah Mwangi" />
+                <Field id="su-email" name="email" label="Email" icon={Mail} type="email" placeholder="you@desk.com" autoComplete="email" />
+                <Field id="su-pass" name="password" label="Password" icon={Lock} type="password" placeholder="At least 8 characters" autoComplete="new-password" minLength={8} />
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Creating…" : "Create account"} <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
