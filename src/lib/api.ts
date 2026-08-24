@@ -1,7 +1,7 @@
 import { supabase } from "./supabase";
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "https://surviving-cork-lushness.ngrok-free.dev";
+  import.meta.env['VITE_API_BASE_URL'] ?? "https://surviving-cork-lushness.ngrok-free.dev";
 
 export class ApiError extends Error {
   status: number;
@@ -51,7 +51,7 @@ export async function apiFetch<T = unknown>(path: string, options: RequestOption
     res = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       signal,
     });
   } catch {
