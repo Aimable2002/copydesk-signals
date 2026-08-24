@@ -52,7 +52,7 @@ export async function apiFetch<T = unknown>(path: string, options: RequestOption
       method,
       headers,
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      signal,
+      ...(signal ? { signal } : {}),
     });
   } catch {
     throw new ApiError("Could not reach the CopyDesk service. Check your connection.", 0);
