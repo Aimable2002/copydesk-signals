@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo, Avatar } from "@/components/brand";
-import { PLATFORM_STATS } from "@/lib/mock";
+import { useLiveAccountState, useMyAccounts, useSession, freshnessMs } from "@/hooks/use-copydesk";
+import { relativeTime } from "@/lib/trades";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -40,6 +41,20 @@ export function AppShell({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const { user } = useSession();
+  const { data: accounts = [] } = useMyAccounts();
+  const live = useLiveAccountState(accounts.map((a) => a.account_id));
+  const freshest = Object.values(live)
+    .map((r) => freshnessMs(r.updated_at))
+    .filter((n): n is number => n !== null)
+    .sort((a, b) => a - b)[0];
+  const lastUpdate = Object.values(live)
+    .map((r) => r.updated_at)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
+  const healthy = freshest !== undefined && freshest < 120_000;
+  const name = user?.email?.split("@")[0] ?? "Your desk";
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,17 +83,23 @@ export function AppShell({
         </nav>
         <div className="mx-3 mt-4 rounded-lg border border-sidebar-border bg-surface-2 p-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="live-dot h-1.5 w-1.5 rounded-full bg-long" />
-            Relay healthy
+            <span className={cn("live-dot h-1.5 w-1.5 rounded-full", healthy ? "bg-long" : "bg-muted-foreground")} />
+            {healthy ? "Relay healthy" : "Awaiting relay data"}
           </div>
-          <div className="num mt-2 text-xl font-semibold text-primary">{PLATFORM_STATS.latencyMs} ms</div>
-          <div className="text-[11px] text-muted-foreground">median fill replication</div>
+          <div className="num mt-2 text-xl font-semibold text-primary">
+            {freshest === undefined ? "—" : freshest < 1000 ? "<1s" : `${Math.round(freshest / 1000)}s`}
+          </div>
+          <div className="text-[11px] text-muted-foreground">
+            since last account update{lastUpdate ? ` · ${relativeTime(lastUpdate)}` : ""}
+          </div>
         </div>
         <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-lg border border-sidebar-border bg-surface-2 p-3">
-          <Avatar name="Jonah Mwangi" size={34} />
+          <Avatar name={name} size={34} />
           <div className="min-w-0">
-            <div className="truncate text-sm font-medium">Jonah Mwangi</div>
-            <div className="truncate text-xs text-muted-foreground">Pro · 3 accounts</div>
+            <div className="truncate text-sm font-medium">{name}</div>
+            <div className="truncate text-xs text-muted-foreground">
+              {accounts.length} account{accounts.length === 1 ? "" : "s"}
+            </div>
           </div>
         </div>
       </aside>
