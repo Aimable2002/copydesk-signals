@@ -12,7 +12,7 @@ import {
   type SubscriptionRow,
 } from "@/lib/supabase";
 import { endpoints, type DirectoryMaster, type Deal } from "@/lib/api";
-import { computeStats, type TradeStats } from "@/lib/trades";
+import { closedDeals, computeStats, type TradeStats } from "@/lib/trades";
 
 /* ------------------------------------------------------------ session */
 
@@ -191,6 +191,18 @@ export function useMastersDirectory() {
   });
 }
 
+/** Real relay latency (from /platform/stats' avg_relay_latency_seconds_30d),
+ * not "time since this account's live_account_state row last updated" -
+ * that old proxy measured how stale the polling loop was, not how long a
+ * copy actually takes to relay. Public endpoint, works logged-out too. */
+export function usePlatformStats() {
+  return useQuery({
+    queryKey: ["platform-stats"],
+    queryFn: endpoints.platformStats,
+    staleTime: 60_000,
+  });
+}
+
 export function useMasterTrades(accountId: string | null | undefined) {
   return useQuery({
     queryKey: ["master-trades", accountId],
@@ -240,6 +252,10 @@ export function useMastersStats(accountIds: string[]) {
       staleTime: 60_000,
     })),
   });
+  // Public masters' live_account_state rows are now readable (RLS opened
+  // up for is_public masters) - use the real current balance to back out
+  // a startingBalance instead of assuming every master started at 0.
+  const live = useLiveAccountState(ids);
 
   return useMemo(() => {
     const map = new Map<
@@ -249,8 +265,14 @@ export function useMastersStats(accountIds: string[]) {
     ids.forEach((id, i) => {
       const q = queries[i];
       const trades = q?.data ?? [];
+      const currentBalance = live[id]?.balance;
+      let startingBalance = 0;
+      if (currentBalance != null) {
+        const realizedNet = closedDeals(trades).reduce((s, d) => s + (Number(d.pnl) || 0), 0);
+        startingBalance = currentBalance - realizedNet;
+      }
       map.set(id, {
-        stats: q?.data ? computeStats(q.data) : null,
+        stats: q?.data ? computeStats(q.data, startingBalance) : null,
         trades,
         isLoading: q?.isLoading ?? false,
         isError: q?.isError ?? false,
@@ -258,7 +280,7 @@ export function useMastersStats(accountIds: string[]) {
     });
     return map;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ids, queries.map((q) => q.dataUpdatedAt).join(",")]);
+  }, [ids, queries.map((q) => q.dataUpdatedAt).join(","), live]);
 }
 
 export function useMasterFollowers(accountId: string | null | undefined) {
