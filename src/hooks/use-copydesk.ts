@@ -50,6 +50,37 @@ export function useRequireAuth() {
   return { session, loading };
 }
 
+/** True once we know the signed-in user's `app_metadata.is_admin` flag.
+ * That flag can only be set server-side (Supabase dashboard or the admin
+ * API with the service-role key) - a signed-in user has no way to grant
+ * it to themselves - matching the same trust assumption
+ * admin_routes.py's `_authenticate_admin` relies on for every /admin/*
+ * backend call. This is a UI convenience only (hide the link, bounce the
+ * page); it is NOT what makes /admin/* safe - the backend check is. */
+export function useIsAdmin() {
+  const { session, loading } = useSession();
+  const isAdmin = Boolean(
+    (session?.user?.app_metadata as Record<string, unknown> | undefined)?.["is_admin"],
+  );
+  return { isAdmin, loading };
+}
+
+/** Redirects away from admin-only routes for anyone without the
+ * `is_admin` app_metadata flag - same idea as useRequireAuth, but also
+ * checks the admin flag once the session is known. */
+export function useRequireAdmin() {
+  const { session, loading: sessionLoading } = useSession();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
+  const navigate = useNavigate();
+  const loading = sessionLoading || adminLoading;
+  useEffect(() => {
+    if (loading) return;
+    if (!session) navigate({ to: "/auth" });
+    else if (!isAdmin) navigate({ to: "/dashboard" });
+  }, [loading, session, isAdmin, navigate]);
+  return { session, isAdmin, loading };
+}
+
 /* ----------------------------------------------------------- accounts */
 
 export function useMyAccounts() {
