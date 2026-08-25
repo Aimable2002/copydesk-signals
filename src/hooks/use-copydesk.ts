@@ -121,7 +121,7 @@ export function useLiveAccountState(accountIds: string[]) {
       });
 
     const channel = supabase
-      .channel(`live_state_${ids.join("_").slice(0, 60)}`)
+      .channel(`live_state_${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "live_account_state" },
