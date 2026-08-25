@@ -14,8 +14,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo, Avatar } from "@/components/brand";
-import { useLiveAccountState, useMyAccounts, useSession, useIsAdmin, freshnessMs } from "@/hooks/use-copydesk";
-import { relativeTime } from "@/lib/trades";
+import { useMyAccounts, useSession, useIsAdmin, usePlatformStats } from "@/hooks/use-copydesk";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -45,17 +44,9 @@ export function AppShell({
   const { user } = useSession();
   const { isAdmin } = useIsAdmin();
   const { data: accounts = [] } = useMyAccounts();
-  const live = useLiveAccountState(accounts.map((a) => a.account_id));
-  const freshest = Object.values(live)
-    .map((r) => freshnessMs(r.updated_at))
-    .filter((n): n is number => n !== null)
-    .sort((a, b) => a - b)[0];
-  const lastUpdate = Object.values(live)
-    .map((r) => r.updated_at)
-    .filter(Boolean)
-    .sort()
-    .reverse()[0];
-  const healthy = freshest !== undefined && freshest < 120_000;
+  const { data: platformStats } = usePlatformStats();
+  const avgLatency = platformStats?.avg_relay_latency_seconds_30d ?? null;
+  const hasRelayData = avgLatency !== null;
   const name = user?.email?.split("@")[0] ?? "Your desk";
 
   return (
@@ -85,14 +76,14 @@ export function AppShell({
         </nav>
         <div className="mx-3 mt-4 rounded-lg border border-sidebar-border bg-surface-2 p-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className={cn("live-dot h-1.5 w-1.5 rounded-full", healthy ? "bg-long" : "bg-muted-foreground")} />
-            {healthy ? "Relay healthy" : "Awaiting relay data"}
+            <span className={cn("live-dot h-1.5 w-1.5 rounded-full", hasRelayData ? "bg-long" : "bg-muted-foreground")} />
+            {hasRelayData ? "Relay healthy" : "No relay data yet"}
           </div>
           <div className="num mt-2 text-xl font-semibold text-primary">
-            {freshest === undefined ? "—" : freshest < 1000 ? "<1s" : `${Math.round(freshest / 1000)}s`}
+            {hasRelayData ? `${avgLatency!.toFixed(1)}s` : "—"}
           </div>
           <div className="text-[11px] text-muted-foreground">
-            since last account update{lastUpdate ? ` · ${relativeTime(lastUpdate)}` : ""}
+            {hasRelayData ? "avg relay latency (30d)" : "no successful copies in the last 30 days"}
           </div>
         </div>
         <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-lg border border-sidebar-border bg-surface-2 p-3">
