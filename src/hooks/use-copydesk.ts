@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import type { Session } from "@supabase/supabase-js";
 import {
   supabase,
   fetchMyAccounts,
   fetchActivePackages,
+  fetchActiveSubscription,
   type AccountRow,
   type LiveAccountStateRow,
+  type SubscriptionRow,
 } from "@/lib/supabase";
-import { endpoints, type DirectoryMaster } from "@/lib/api";
+import { endpoints, type DirectoryMaster, type Deal } from "@/lib/api";
+import { computeStats, type TradeStats } from "@/lib/trades";
 
 /* ------------------------------------------------------------ session */
 
@@ -152,10 +155,7 @@ export function freshnessMs(updatedAt: string | null | undefined) {
 export function useMastersDirectory() {
   return useQuery({
     queryKey: ["masters-directory"],
-    queryFn: async (): Promise<DirectoryMaster[]> => {
-      const res = await endpoints.mastersDirectory();
-      return Array.isArray(res) ? res : (res?.masters ?? []);
-    },
+    queryFn: (): Promise<DirectoryMaster[]> => endpoints.mastersDirectory(),
     staleTime: 60_000,
   });
 }
@@ -179,4 +179,61 @@ export function useAccountTrades(accountId: string | null | undefined) {
 
 export function usePackages() {
   return useQuery({ queryKey: ["packages"], queryFn: fetchActivePackages, staleTime: 300_000 });
+}
+
+/* ------------------------------------------------------- subscriptions */
+
+export function useAccountSubscriptions(accountIds: string[]) {
+  const key = accountIds.slice().sort().join(",");
+  return useQuery({
+    queryKey: ["account-subscriptions", key],
+    queryFn: async () => {
+      const ids = key ? key.split(",") : [];
+      const entries = await Promise.all(
+        ids.map(async (id) => [id, await fetchActiveSubscription(id)] as const),
+      );
+      return Object.fromEntries(entries) as Record<string, SubscriptionRow | null>;
+    },
+    enabled: !!key,
+  });
+}
+
+/* --------------------------------------------------- master perf stats */
+
+export function useMastersStats(accountIds: string[]) {
+  const ids = useMemo(() => accountIds.slice(), [accountIds.join(",")]);
+  const queries = useQueries({
+    queries: ids.map((id) => ({
+      queryKey: ["master-trades", id],
+      queryFn: (): Promise<Deal[]> => endpoints.masterTrades(id),
+      staleTime: 60_000,
+    })),
+  });
+
+  return useMemo(() => {
+    const map = new Map<
+      string,
+      { stats: TradeStats | null; trades: Deal[]; isLoading: boolean; isError: boolean }
+    >();
+    ids.forEach((id, i) => {
+      const q = queries[i];
+      const trades = q?.data ?? [];
+      map.set(id, {
+        stats: q?.data ? computeStats(q.data) : null,
+        trades,
+        isLoading: q?.isLoading ?? false,
+        isError: q?.isError ?? false,
+      });
+    });
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ids, queries.map((q) => q.dataUpdatedAt).join(",")]);
+}
+
+export function useMasterFollowers(accountId: string | null | undefined) {
+  return useQuery({
+    queryKey: ["master-followers", accountId],
+    queryFn: () => endpoints.masterFollowers(accountId!),
+    enabled: !!accountId,
+  });
 }
