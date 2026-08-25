@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo, Avatar } from "@/components/brand";
-import { useLiveAccountState, useMyAccounts, useSession, freshnessMs } from "@/hooks/use-copydesk";
+import { useLiveAccountState, useMyAccounts, useSession, useIsAdmin, freshnessMs } from "@/hooks/use-copydesk";
 import { relativeTime } from "@/lib/trades";
 import { cn } from "@/lib/utils";
 
@@ -25,9 +25,10 @@ const NAV = [
   { to: "/trades", label: "Trade history", icon: History },
   { to: "/challenges", label: "Challenges", icon: Target },
   { to: "/wallet", label: "Wallet & billing", icon: Wallet },
-  { to: "/admin", label: "Admin console", icon: ShieldCheck },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
+
+const ADMIN_NAV = { to: "/admin", label: "Admin console", icon: ShieldCheck } as const;
 
 export function AppShell({
   title,
@@ -42,6 +43,7 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false);
   const { user } = useSession();
+  const { isAdmin } = useIsAdmin();
   const { data: accounts = [] } = useMyAccounts();
   const live = useLiveAccountState(accounts.map((a) => a.account_id));
   const freshest = Object.values(live)
@@ -68,7 +70,7 @@ export function AppShell({
           <Logo />
         </div>
         <nav className="space-y-1 p-3">
-          {NAV.map(({ to, label, icon: Icon }) => (
+          {[...NAV, ...(isAdmin ? [ADMIN_NAV] : [])].map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
