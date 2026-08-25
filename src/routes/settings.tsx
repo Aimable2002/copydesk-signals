@@ -172,10 +172,12 @@ function Settings() {
           </div>
           <Button
             variant="outline"
-            onClick={() => {
+            onClick={async () => {
+              await supabase.auth.signOut();
               toast.success("Signed out");
               navigate({ to: "/auth" });
             }}
+
           >
             <LogOut className="mr-2 h-4 w-4" /> Sign out
           </Button>
